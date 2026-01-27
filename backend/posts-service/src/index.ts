@@ -1,7 +1,7 @@
 import express, { type Express } from "express";
-import { authRouter } from "./router";
-import { startServer } from "./utils/startServer";
 import cors from "cors";
+import { postRouter } from "./route";
+import { startServer } from "./util/startServer";
 
 const app: Express = express();
 app.use(
@@ -13,5 +13,5 @@ app.use(
   }),
 );
 app.use(express.json()); //Available data transfer using json format
-app.use("/", authRouter); // Router middleware
+app.use("/", postRouter); // Router middleware
 startServer(app);
