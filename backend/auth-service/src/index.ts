@@ -1,8 +1,8 @@
-import express from "express";
-import type { Express } from "express";
+import express, { type Express } from "express";
+import { authRouter } from "./router";
+import { startServer } from "./utils/startServer";
 
 const app: Express = express();
 app.use(express.json()); //Available data transfer using json format
-app.use("/", () => console.log("OK"));
-
-app.listen(3000, () => console.log("Auth service running on the port: ", 4000));
+app.use("/", authRouter); // Router middleware
+startServer(app);

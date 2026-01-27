@@ -1,0 +1,31 @@
+version: "3.9"
+
+services:
+  postgres-auth:
+    image: postgres:15
+    container_name: postgres-auth
+    environment:
+      POSTGRES_DB: ${AUTH_DB_NAME}
+      POSTGRES_USER: ${AUTH_DB_USER}
+      POSTGRES_PASSWORD: ${AUTH_DB_PASSWORD}
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U postgres -d auth-service"]
+      interval: 5s
+      timeout: 5s
+      retries: 5
+    ports:
+      - "5433:5432"
+    restart: always
+
+  auth-service:
+    build:
+      context: ./backend/auth-service
+    container_name: auth-service
+    env_file:
+      - ./backend/auth-service/.env
+    ports:
+      - "4001:4001"
+    restart: always
+    depends_on:
+      postgres-auth:
+        condition: service_healthy
