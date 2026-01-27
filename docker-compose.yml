@@ -9,7 +9,7 @@ services:
       POSTGRES_USER: ${AUTH_DB_USER}
       POSTGRES_PASSWORD: ${AUTH_DB_PASSWORD}
     healthcheck:
-      test: ["CMD-SHELL", "pg_isready -U postgres -d auth-service"]
+      test: ["CMD-SHELL", "pg_isready -U ${AUTH_DB_USER} -d ${AUTH_DB_NAME}"]
       interval: 5s
       timeout: 5s
       retries: 5
@@ -25,7 +25,7 @@ services:
       POSTGRES_USER: ${POSTS_DB_USER}
       POSTGRES_PASSWORD: ${POSTS_DB_PASSWORD}
     healthcheck:
-      test: ["CMD-SHELL", "pg_isready -U postgres -d posts-service"]
+      test: ["CMD-SHELL", "pg_isready -U ${POSTS_DB_USER} -d ${POSTS_DB_NAME}"]
       interval: 5s
       timeout: 5s
       retries: 5
@@ -38,9 +38,15 @@ services:
       context: ./backend/auth-service
     container_name: auth-service
     env_file:
-      - ./backend/auth-service/.env
+      PORT: ${AUTH_SERVICE_PORT}
+      DB_HOST: postgres-auth
+      DB_PORT: 5432
+      DB_NAME: ${AUTH_DB_NAME}
+      DB_USER: ${AUTH_DB_USER}
+      DB_PASSWORD: ${AUTH_DB_PASSWORD}
+      JWT_SECRET: ${JWT_SECRET}
     ports:
-      - "4001:4001"
+      - "${AUTH_SERVICE_PORT}:${AUTH_SERVICE_PORT}"
     restart: always
     depends_on:
       postgres-auth:
@@ -51,9 +57,15 @@ services:
       context: ./backend/posts-service
     container_name: posts-service
     env_file:
-      - ./backend/posts-service/.env
+      PORT: ${POSTS_SERVICE_PORT}
+      DB_HOST: postgres-posts
+      DB_PORT: 5432
+      DB_NAME: ${POSTS_DB_NAME}
+      DB_USER: ${POSTS_DB_USER}
+      DB_PASSWORD: ${POSTS_DB_PASSWORD}
+      JWT_SECRET: ${JWT_SECRET}
     ports:
-      - "4002:4002"
+      - "${POSTS_SERVICE_PORT}:${POSTS_SERVICE_PORT}"
     restart: always
     depends_on:
       postgres-auth:
