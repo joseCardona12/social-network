@@ -17,6 +17,22 @@ services:
       - "5433:5432"
     restart: always
 
+  postgres-posts:
+    image: postgres:15
+    container_name: postgres-posts
+    environment:
+      POSTGRES_DB: ${POSTS_DB_NAME}
+      POSTGRES_USER: ${POSTS_DB_USER}
+      POSTGRES_PASSWORD: ${POSTS_DB_PASSWORD}
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U postgres -d posts-service"]
+      interval: 5s
+      timeout: 5s
+      retries: 5
+    ports:
+      - "5434:5432"
+    restart: always
+
   auth-service:
     build:
       context: ./backend/auth-service
@@ -25,6 +41,19 @@ services:
       - ./backend/auth-service/.env
     ports:
       - "4001:4001"
+    restart: always
+    depends_on:
+      postgres-auth:
+        condition: service_healthy
+
+  posts-service:
+    build:
+      context: ./backend/posts-service
+    container_name: posts-service
+    env_file:
+      - ./backend/posts-service/.env
+    ports:
+      - "4002:4002"
     restart: always
     depends_on:
       postgres-auth:

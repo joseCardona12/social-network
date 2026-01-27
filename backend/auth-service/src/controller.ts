@@ -35,6 +35,7 @@ export class AuthController {
         message: "User found correctly",
         data: {
           email,
+          user,
         },
         token: tokenGenerated,
       });
