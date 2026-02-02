@@ -8,6 +8,8 @@ import { postServiceF } from "../../services/post.service";
 
 export default function Dashboard() {
   const [modalCreate, setModalCreate] = useState<boolean>(false);
+  const [modalUpdate, setModalUpdate] = useState<boolean>(false);
+  const [idPost, setIdPost] = useState<string>("");
   const [posts, setPosts] = useState<IPost[]>([]);
   const [loadingPosts, setLoadingPost] = useState<boolean>(false);
   const [isRefresh, setIsRefresh] = useState<boolean>(false);
@@ -41,15 +43,28 @@ export default function Dashboard() {
               firstLetter="J"
               message={post.message}
               name="Jose Cardona"
+              setModalUpdate={setModalUpdate}
+              id={`${post.id}`}
+              setIdPost={setIdPost}
             />
           ))}
         </div>
       </main>
+      {modalUpdate && (
+        <ModalPost
+          setModalPost={setModalUpdate}
+          setIsRefresh={setIsRefresh}
+          isRefresh={isRefresh}
+          type="update"
+          id={idPost}
+        />
+      )}
       {modalCreate && (
         <ModalPost
           setModalPost={setModalCreate}
           setIsRefresh={setIsRefresh}
           isRefresh={isRefresh}
+          type="create"
         />
       )}
     </div>

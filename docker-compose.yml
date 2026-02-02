@@ -37,8 +37,14 @@ services:
     build:
       context: ./backend/auth-service
     container_name: auth-service
-    env_file:
-      - ./backend/auth-service/.env
+    environment:
+      AUTH_DB_HOST: ${AUTH_DB_HOST}
+      AUTH_DB_NAME: ${AUTH_DB_NAME}
+      AUTH_DB_USER: ${AUTH_DB_USER}
+      AUTH_DB_PASSWORD: ${AUTH_DB_PASSWORD}
+      AUTH_SERVICE_PORT: ${AUTH_SERVICE_PORT}
+      JWT_SECRET: ${JWT_SECRET}
+      AUTH_DB_PORT: ${AUTH_DB_PORT}
     ports:
       - "4001:4001"
     restart: always
@@ -50,8 +56,13 @@ services:
     build:
       context: ./backend/posts-service
     container_name: posts-service
-    env_file:
-      - ./backend/posts-service/.env
+    environment:
+      POSTS_DB_HOST: ${POSTS_DB_HOST}
+      POSTS_DB_NAME: ${POSTS_DB_NAME}
+      POSTS_DB_USER: ${POSTS_DB_USER}
+      POSTS_DB_PASSWORD: ${POSTS_DB_PASSWORD}
+      POSTS_SERVICE_PORT: ${POSTS_SERVICE_PORT}
+      POSTS_DB_PORT: ${POSTS_DB_PORT}
     ports:
       - "4002:4002"
     restart: always
